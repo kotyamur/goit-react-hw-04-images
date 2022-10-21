@@ -33,7 +33,7 @@ export const SearchFormBtn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  display: inline-block;
+  /* display: inline-block; */
   width: 48px;
   height: 48px;
   border: 0;
