@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { fetchImagesByName } from '../api';
 import { Layout } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
+import { Button } from './Button/Button';
 
 export class App extends Component {
   state = {
@@ -51,7 +52,7 @@ export class App extends Component {
           onChange={this.handleChange}
         />
         <div></div>
-        <button type="button">Load more</button>
+        <Button />
       </Layout>
     );
   }
