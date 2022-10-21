@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import axios from 'axios';
+import { Layout } from './App.styled';
+import { Searchbar } from './Searchbar/Searchbar';
 
 const API_KEY = '29796750-ac01510cc804ce1d65455fcc5';
 axios.defaults.baseURL = 'https://pixabay.com/api/';
@@ -7,6 +9,7 @@ axios.defaults.baseURL = 'https://pixabay.com/api/';
 export class App extends Component {
   state = {
     searchQuery: '',
+    page: 1,
   };
 
   componentDidMount() {
@@ -48,8 +51,13 @@ export class App extends Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
+      <Layout>
+        <Searchbar
+          onSubmit={this.handleSubmit}
+          inputValue={this.state.searchQuery}
+          onChange={this.handleChange}
+        />
+        {/* <form onSubmit={this.handleSubmit}>
           <input
             type="text"
             name="searchQuery"
@@ -58,10 +66,10 @@ export class App extends Component {
             onChange={this.handleChange}
           />
           <button type="submit">Search</button>
-        </form>
+        </form> */}
         <div></div>
         <button type="button">Load more</button>
-      </div>
+      </Layout>
     );
   }
 }
