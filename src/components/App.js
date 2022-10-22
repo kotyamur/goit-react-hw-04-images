@@ -4,6 +4,7 @@ import { Layout } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
@@ -12,6 +13,7 @@ export class App extends Component {
     error: null,
     images: [],
     totalHits: null,
+    isLoading: false,
   };
 
   componentDidMount() {
@@ -42,6 +44,7 @@ export class App extends Component {
     const searchQuery = this.state.searchQuery;
     const searchPage = this.state.page;
     try {
+      this.setState({ isLoading: true });
       const images = await fetchImagesByName(searchQuery, searchPage);
       console.log(images.totalHits);
       if (!this.state.totalHits) {
@@ -57,6 +60,7 @@ export class App extends Component {
         error: 'Ops, failed to load. Please try again. ',
       });
     } finally {
+      this.setState({ isLoading: false });
     }
   };
 
@@ -80,6 +84,7 @@ export class App extends Component {
           inputValue={this.state.searchQuery}
           onChange={this.handleChange}
         />
+        <Loader isLoading={this.state.isLoading} />
         {this.state.images.length > 0 && (
           <ImageGallery images={this.state.images} />
         )}

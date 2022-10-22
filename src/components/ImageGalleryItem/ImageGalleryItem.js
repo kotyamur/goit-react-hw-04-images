@@ -18,7 +18,11 @@ export class ImageGalleryItem extends Component {
     return (
       <>
         <ImageBox onClick={this.toggleModal}>
-          <GalleryItemImage src={image.webformatURL} alt={image.tags} />
+          <GalleryItemImage
+            src={image.webformatURL}
+            alt={image.tags}
+            loading="lazy"
+          />
         </ImageBox>
         {this.state.showModal && (
           <Modal
