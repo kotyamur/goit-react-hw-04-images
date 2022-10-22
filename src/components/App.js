@@ -41,6 +41,10 @@ export class App extends Component {
       this.setState({
         images: images,
         isLoadMoreShown: images.length < fetchedImages.totalHits,
+        error:
+          images.length === 0
+            ? 'Sorry, there are no images matching your search query.'
+            : '',
       });
     } catch {
       this.setState({
