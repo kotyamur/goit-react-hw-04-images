@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Overlay, ImgModal } from './Modal.styled';
 import { createPortal } from 'react-dom';
@@ -5,6 +6,12 @@ import { createPortal } from 'react-dom';
 const modalRoot = document.querySelector('#modal-root');
 
 export class Modal extends Component {
+  static propTypes = {
+    onClick: PropTypes.func.isRequired,
+    alt: PropTypes.string.isRequired,
+    largeImg: PropTypes.string.isRequired,
+  };
+
   componentDidMount() {
     console.log('Modal componentDidMount');
     window.addEventListener('keydown', this.handleKeyDown);

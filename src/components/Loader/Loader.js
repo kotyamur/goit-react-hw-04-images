@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 export const Loader = ({ isLoading }) => {
@@ -11,4 +12,8 @@ export const Loader = ({ isLoading }) => {
       cssOverride={{ margin: 'auto' }}
     />
   );
+};
+
+Loader.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
 };
