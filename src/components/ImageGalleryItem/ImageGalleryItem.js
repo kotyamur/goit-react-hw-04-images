@@ -23,21 +23,20 @@ export class ImageGalleryItem extends Component {
   };
 
   render() {
-    const { image } = this.props;
+    const {
+      image: { webformatURL, tags, largeImageURL },
+    } = this.props;
+
     return (
       <>
         <ImageBox onClick={this.toggleModal}>
-          <GalleryItemImage
-            src={image.webformatURL}
-            alt={image.tags}
-            loading="lazy"
-          />
+          <GalleryItemImage src={webformatURL} alt={tags} loading="lazy" />
         </ImageBox>
         {this.state.showModal && (
           <Modal
             onClose={this.toggleModal}
-            largeImg={image.largeImageURL}
-            alt={image.tags}
+            largeImg={largeImageURL}
+            alt={tags}
           />
         )}
       </>

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { fetchImagesByName } from '../api';
-import { Layout } from './App.styled';
+import { Layout, ErrorMessage } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -22,9 +22,7 @@ export class App extends Component {
     }
   }
 
-  componentDidUpdate(_, prevState) {
-    console.log(this.state);
-    // const isLoadMoreClicked = prevState.page !== this.state.page;
+  componentDidUpdate() {
     if (this.state.isLoading) {
       this.fetchImages();
     }
@@ -38,7 +36,6 @@ export class App extends Component {
     const searchQuery = this.state.searchQuery;
     const searchPage = this.state.page;
     try {
-      // this.setState({ isLoading: true });
       const fetchedImages = await fetchImagesByName(searchQuery, searchPage);
       const images = [...this.state.images, ...fetchedImages.hits];
       this.setState({
@@ -71,19 +68,19 @@ export class App extends Component {
   };
 
   render() {
+    const { isLoading, images, error, isLoadMoreShown, searchQuery } =
+      this.state;
     return (
       <Layout>
         <Searchbar
           onSubmit={this.handleSubmit}
-          inputValue={this.state.searchQuery}
+          inputValue={searchQuery}
           onChange={this.handleChange}
         />
-        <Loader isLoading={this.state.isLoading} />
-        {this.state.images.length > 0 && (
-          <ImageGallery images={this.state.images} />
-        )}
-        {this.state.error && <div>{this.state.error}</div>}
-        {!this.state.isLoading && this.state.isLoadMoreShown && (
+        <Loader isLoading={isLoading} />
+        {images.length > 0 && <ImageGallery images={images} />}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {!isLoading && isLoadMoreShown && (
           <Button onClick={this.handleClickOnLoadBtn} />
         )}
       </Layout>
