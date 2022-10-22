@@ -80,7 +80,9 @@ export class App extends Component {
           inputValue={this.state.searchQuery}
           onChange={this.handleChange}
         />
-        <ImageGallery images={this.state.images} />
+        {this.state.images.length > 0 && (
+          <ImageGallery images={this.state.images} />
+        )}
         {this.state.images.length > 0 &&
           this.state.images.length < this.state.totalHits && (
             <Button onClick={this.handleClickOnLoadBtn} />

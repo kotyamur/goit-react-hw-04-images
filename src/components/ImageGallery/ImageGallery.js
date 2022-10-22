@@ -4,8 +4,8 @@ import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 export const ImageGallery = ({ images }) => {
   return (
     <Layout>
-      {images.map(({ id, webformatURL, tags }) => {
-        return <ImageGalleryItem key={id} image={webformatURL} tags={tags} />;
+      {images.map(image => {
+        return <ImageGalleryItem key={image.id} image={image} />;
       })}
     </Layout>
   );
