@@ -9,55 +9,45 @@ import { Loader } from './Loader/Loader';
 export class App extends Component {
   state = {
     searchQuery: '',
-    page: 1,
-    error: null,
+    page: null,
+    error: '',
     images: [],
-    totalHits: null,
     isLoading: false,
+    isLoadMoreShown: false,
   };
 
   componentDidMount() {
-    console.log('DidMount');
+    if (this.state.isLoading) {
+      this.fetchImages();
+    }
   }
 
   componentDidUpdate(_, prevState) {
-    console.log('didUpdate');
-    console.log(prevState.page);
-    console.log(this.state.page);
-    if (
-      prevState.page !== this.state.page &&
-      prevState.searchQuery === this.state.searchQuery
-    ) {
+    console.log(this.state);
+    // const isLoadMoreClicked = prevState.page !== this.state.page;
+    if (this.state.isLoading) {
       this.fetchImages();
     }
   }
 
   handleChange = e => {
     this.setState({ searchQuery: e.currentTarget.value });
-    console.log(e.currentTarget.value);
-    this.setState({ images: [] });
-    this.setState({ page: 1 });
-    this.setState({ totalHits: null });
   };
 
   fetchImages = async () => {
     const searchQuery = this.state.searchQuery;
     const searchPage = this.state.page;
     try {
-      this.setState({ isLoading: true });
-      const images = await fetchImagesByName(searchQuery, searchPage);
-      console.log(images.totalHits);
-      if (!this.state.totalHits) {
-        this.setState({ totalHits: images.totalHits });
-      }
-      this.setState(prevState => {
-        return {
-          images: prevState.images.concat(images.hits),
-        };
+      // this.setState({ isLoading: true });
+      const fetchedImages = await fetchImagesByName(searchQuery, searchPage);
+      const images = [...this.state.images, ...fetchedImages.hits];
+      this.setState({
+        images: images,
+        isLoadMoreShown: images.length < fetchedImages.totalHits,
       });
     } catch {
       this.setState({
-        error: 'Ops, failed to load. Please try again. ',
+        error: 'Ops, failed to load. Please try again.',
       });
     } finally {
       this.setState({ isLoading: false });
@@ -66,14 +56,18 @@ export class App extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log('submit');
-
-    this.fetchImages();
+    this.setState({
+      images: [],
+      page: 1,
+      isLoading: true,
+    });
   };
 
   handleClickOnLoadBtn = () => {
-    console.log('Click');
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      isLoading: true,
+    }));
   };
 
   render() {
@@ -88,10 +82,10 @@ export class App extends Component {
         {this.state.images.length > 0 && (
           <ImageGallery images={this.state.images} />
         )}
-        {this.state.images.length > 0 &&
-          this.state.images.length < this.state.totalHits && (
-            <Button onClick={this.handleClickOnLoadBtn} />
-          )}
+        {this.state.error && <div>{this.state.error}</div>}
+        {!this.state.isLoading && this.state.isLoadMoreShown && (
+          <Button onClick={this.handleClickOnLoadBtn} />
+        )}
       </Layout>
     );
   }
