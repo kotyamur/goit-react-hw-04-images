@@ -11,6 +11,7 @@ export class App extends Component {
     page: 1,
     error: null,
     images: [],
+    totalHits: null,
   };
 
   componentDidMount() {
@@ -34,6 +35,7 @@ export class App extends Component {
     console.log(e.currentTarget.value);
     this.setState({ images: [] });
     this.setState({ page: 1 });
+    this.setState({ totalHits: null });
   };
 
   fetchImages = async () => {
@@ -41,7 +43,10 @@ export class App extends Component {
     const searchPage = this.state.page;
     try {
       const images = await fetchImagesByName(searchQuery, searchPage);
-      console.log(images.hits);
+      console.log(images.totalHits);
+      if (!this.state.totalHits) {
+        this.setState({ totalHits: images.totalHits });
+      }
       this.setState(prevState => {
         return {
           images: prevState.images.concat(images.hits),
@@ -76,7 +81,10 @@ export class App extends Component {
           onChange={this.handleChange}
         />
         <ImageGallery images={this.state.images} />
-        <Button onClick={this.handleClickOnLoadBtn} />
+        {this.state.images.length > 0 &&
+          this.state.images.length < this.state.totalHits && (
+            <Button onClick={this.handleClickOnLoadBtn} />
+          )}
       </Layout>
     );
   }
