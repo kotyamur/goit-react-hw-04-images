@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchImagesByName, controller } from '../api';
+import { fetchImagesByName } from '../api';
 import { Layout, ErrorMessage } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Button } from './Button/Button';
@@ -12,7 +12,9 @@ export const App = () => {
   const [error, setError] = useState('');
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  // const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
+  const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
+
+  console.log(images.length);
 
   useEffect(() => {
     if (searchQuery === '' || !isLoading) {
@@ -21,8 +23,12 @@ export const App = () => {
     const fetchImages = async () => {
       try {
         const fetchedImages = await fetchImagesByName(searchQuery, currentPage);
-        console.log(fetchedImages);
+        console.log(images.length);
+        console.log(fetchedImages.totalHits);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
+        setIsLoadMoreShown(
+          images.length + fetchedImages.hits.length < fetchedImages.totalHits
+        );
       } catch (e) {
         setError('Ops, failed to load. Please try again.');
         throw e;
@@ -44,12 +50,10 @@ export const App = () => {
     setIsLoading(true);
   };
 
-  // handleClickOnLoadBtn = () => {
-  //   this.setState(prevState => ({
-  //     page: prevState.page + 1,
-  //     isLoading: true,
-  //   }));
-  // };
+  const handleClickOnLoadBtn = () => {
+    setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+    setIsLoading(true);
+  };
 
   return (
     <Layout>
@@ -61,9 +65,9 @@ export const App = () => {
       <Loader isLoading={isLoading} />
       {images.length > 0 && <ImageGallery images={images} />}
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {/* {!isLoading && isLoadMoreShown && (
-          <Button onClick={this.handleClickOnLoadBtn} />
-        )} */}
+      {!isLoading && isLoadMoreShown && (
+        <Button onClick={handleClickOnLoadBtn} />
+      )}
     </Layout>
   );
 };
