@@ -15,7 +15,7 @@ export const App = () => {
   // const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
 
   useEffect(() => {
-    if (searchQuery === '') {
+    if (searchQuery === '' || !isLoading) {
       return;
     }
     const fetchImages = async () => {
@@ -23,16 +23,14 @@ export const App = () => {
         const fetchedImages = await fetchImagesByName(searchQuery, currentPage);
         console.log(fetchedImages);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
-      } catch {
+      } catch (e) {
         setError('Ops, failed to load. Please try again.');
+        throw e;
       } finally {
         setIsLoading(false);
       }
     };
     fetchImages();
-    return () => {
-      controller.abort();
-    };
   }, [isLoading]);
 
   const handleChange = e => {
