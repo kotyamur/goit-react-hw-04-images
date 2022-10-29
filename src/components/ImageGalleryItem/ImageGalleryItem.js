@@ -1,10 +1,22 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ImageBox, GalleryItemImage } from './ImageGalleryItem.styled';
 import { Modal } from '../Modal/Modal';
 
-export const ImageGalleryItem = ({ image }) => {
+export const ImageGalleryItem = ({ image, images }) => {
   const [showModal, setShowModal] = useState(false);
+
+  const itemRef = useRef();
+
+  useEffect(() => {
+    if (images.length < 13) {
+      return;
+    }
+    window.scrollBy({
+      top: itemRef.current.clientHeight * 2,
+      behavior: 'smooth',
+    });
+  }, [images.length]);
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -14,7 +26,7 @@ export const ImageGalleryItem = ({ image }) => {
 
   return (
     <>
-      <ImageBox onClick={toggleModal}>
+      <ImageBox onClick={toggleModal} ref={itemRef}>
         <GalleryItemImage src={webformatURL} alt={tags} loading="lazy" />
       </ImageBox>
       {showModal && (

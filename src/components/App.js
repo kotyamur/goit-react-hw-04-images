@@ -22,8 +22,6 @@ export const App = () => {
       setIsLoading(true);
       try {
         const fetchedImages = await fetchImagesByName(searchQuery, currentPage);
-        console.log(fetchedImages);
-        console.log(fetchedImages.totalHits);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
         setTotalHits(fetchedImages.totalHits);
       } catch (e) {

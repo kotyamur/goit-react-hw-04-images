@@ -6,7 +6,9 @@ export const ImageGallery = ({ images }) => {
   return (
     <Layout>
       {images.map(image => {
-        return <ImageGalleryItem key={image.id} image={image} />;
+        return (
+          <ImageGalleryItem key={image.id} image={image} images={images} />
+        );
       })}
     </Layout>
   );
