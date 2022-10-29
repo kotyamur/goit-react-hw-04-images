@@ -13,6 +13,7 @@ export const App = () => {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   // const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
+  const [totalHits, setTotalHits] = useState(null);
 
   useEffect(() => {
     if (searchQuery === '') {
@@ -28,6 +29,7 @@ export const App = () => {
         console.log(fetchedImages);
         console.log(fetchedImages.totalHits);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
+        setTotalHits(fetchedImages.totalHits);
         // setIsLoadMoreShown(
         //   images.length + fetchedImages.hits.length < fetchedImages.totalHits
         // );
@@ -46,6 +48,19 @@ export const App = () => {
     fetchImages();
   }, [searchQuery, currentPage]);
 
+  const shouldLoadMoreShown = images.length < totalHits;
+
+  useEffect(() => {
+    if (totalHits === null) {
+      return;
+    }
+    setError(
+      totalHits === 0
+        ? 'Sorry, there are no images matching your search query.'
+        : ''
+    );
+  }, [totalHits]);
+
   // const handleChange = e => {
   //   setSearchQuery(e.currentTarget.value);
   // };
@@ -54,6 +69,7 @@ export const App = () => {
     setSearchQuery(query);
     setCurrentPage(1);
     setImages([]);
+    setTotalHits(null);
     // setIsLoading(true);
   };
 
@@ -69,12 +85,15 @@ export const App = () => {
         // inputValue={searchQuery}
         // onChange={handleChange}
       />
-      <Loader isLoading={isLoading} />
       {images.length > 0 && <ImageGallery images={images} />}
+      <Loader isLoading={isLoading} />
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {/* {!isLoading && isLoadMoreShown && (
         <Button onClick={handleClickOnLoadBtn} />
       )} */}
+      {!isLoading && shouldLoadMoreShown && (
+        <Button onClick={handleClickOnLoadBtn} />
+      )}
     </Layout>
   );
 };
