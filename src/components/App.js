@@ -12,16 +12,12 @@ export const App = () => {
   const [error, setError] = useState('');
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  // const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
   const [totalHits, setTotalHits] = useState(null);
 
   useEffect(() => {
     if (searchQuery === '') {
       return;
     }
-    // if (searchQuery === '' || !isLoading) {
-    //   return;
-    // }
     const fetchImages = async () => {
       setIsLoading(true);
       try {
@@ -30,14 +26,6 @@ export const App = () => {
         console.log(fetchedImages.totalHits);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
         setTotalHits(fetchedImages.totalHits);
-        // setIsLoadMoreShown(
-        //   images.length + fetchedImages.hits.length < fetchedImages.totalHits
-        // );
-        // setError(
-        //   images.length === 0
-        //     ? 'Sorry, there are no images matching your search query.'
-        //     : ''
-        // );
       } catch (e) {
         setError('Ops, failed to load. Please try again.');
         throw e;
@@ -61,36 +49,23 @@ export const App = () => {
     );
   }, [totalHits]);
 
-  // const handleChange = e => {
-  //   setSearchQuery(e.currentTarget.value);
-  // };
-
   const handleSubmit = query => {
     setSearchQuery(query);
     setCurrentPage(1);
     setImages([]);
     setTotalHits(null);
-    // setIsLoading(true);
   };
 
   const handleClickOnLoadBtn = () => {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
-    // setIsLoading(true);
   };
 
   return (
     <Layout>
-      <Searchbar
-        onSubmit={handleSubmit}
-        // inputValue={searchQuery}
-        // onChange={handleChange}
-      />
+      <Searchbar onSubmit={handleSubmit} />
       {images.length > 0 && <ImageGallery images={images} />}
       <Loader isLoading={isLoading} />
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {/* {!isLoading && isLoadMoreShown && (
-        <Button onClick={handleClickOnLoadBtn} />
-      )} */}
       {!isLoading && shouldLoadMoreShown && (
         <Button onClick={handleClickOnLoadBtn} />
       )}
