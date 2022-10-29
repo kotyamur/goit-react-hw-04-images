@@ -12,21 +12,25 @@ export const App = () => {
   const [error, setError] = useState('');
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
+  // const [isLoadMoreShown, setIsLoadMoreShown] = useState(false);
 
   useEffect(() => {
-    if (searchQuery === '' || !isLoading) {
+    if (searchQuery === '') {
       return;
     }
+    // if (searchQuery === '' || !isLoading) {
+    //   return;
+    // }
     const fetchImages = async () => {
+      setIsLoading(true);
       try {
         const fetchedImages = await fetchImagesByName(searchQuery, currentPage);
         console.log(fetchedImages);
         console.log(fetchedImages.totalHits);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
-        setIsLoadMoreShown(
-          images.length + fetchedImages.hits.length < fetchedImages.totalHits
-        );
+        // setIsLoadMoreShown(
+        //   images.length + fetchedImages.hits.length < fetchedImages.totalHits
+        // );
         // setError(
         //   images.length === 0
         //     ? 'Sorry, there are no images matching your search query.'
@@ -40,37 +44,37 @@ export const App = () => {
       }
     };
     fetchImages();
-  }, [isLoading]);
+  }, [searchQuery, currentPage]);
 
-  const handleChange = e => {
-    setSearchQuery(e.currentTarget.value);
-  };
+  // const handleChange = e => {
+  //   setSearchQuery(e.currentTarget.value);
+  // };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const handleSubmit = query => {
+    setSearchQuery(query);
     setCurrentPage(1);
     setImages([]);
-    setIsLoading(true);
+    // setIsLoading(true);
   };
 
   const handleClickOnLoadBtn = () => {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
-    setIsLoading(true);
+    // setIsLoading(true);
   };
 
   return (
     <Layout>
       <Searchbar
         onSubmit={handleSubmit}
-        inputValue={searchQuery}
-        onChange={handleChange}
+        // inputValue={searchQuery}
+        // onChange={handleChange}
       />
       <Loader isLoading={isLoading} />
       {images.length > 0 && <ImageGallery images={images} />}
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {!isLoading && isLoadMoreShown && (
+      {/* {!isLoading && isLoadMoreShown && (
         <Button onClick={handleClickOnLoadBtn} />
-      )}
+      )} */}
     </Layout>
   );
 };
