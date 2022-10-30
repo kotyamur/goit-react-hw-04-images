@@ -40,11 +40,13 @@ export const App = () => {
   const shouldLoadMoreShown = !isLoading && images.length < totalHits;
 
   const handleSubmit = query => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-    setError('');
-    setImages([]);
-    setTotalHits(null);
+    if (query !== searchQuery) {
+      setSearchQuery(query);
+      setCurrentPage(1);
+      setError('');
+      setImages([]);
+      setTotalHits(null);
+    }
   };
 
   const handleClickOnLoadBtn = () => {
