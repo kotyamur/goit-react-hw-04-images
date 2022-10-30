@@ -15,15 +15,15 @@ export const App = () => {
   const [totalHits, setTotalHits] = useState(null);
 
   useEffect(() => {
-    if (searchQuery === '') {
-      return;
-    }
     const fetchImages = async () => {
       setIsLoading(true);
       try {
         const fetchedImages = await fetchImagesByName(searchQuery, currentPage);
         setImages(prevImages => [...prevImages, ...fetchedImages.hits]);
         setTotalHits(fetchedImages.totalHits);
+        if (fetchedImages.totalHits === 0) {
+          setError('Sorry, there are no images matching your search query.');
+        }
       } catch (e) {
         setError('Ops, failed to load. Please try again.');
         throw e;
@@ -31,25 +31,18 @@ export const App = () => {
         setIsLoading(false);
       }
     };
-    fetchImages();
+
+    if (searchQuery) {
+      fetchImages();
+    }
   }, [searchQuery, currentPage]);
 
-  const shouldLoadMoreShown = images.length < totalHits;
-
-  useEffect(() => {
-    if (totalHits === null) {
-      return;
-    }
-    setError(
-      totalHits === 0
-        ? 'Sorry, there are no images matching your search query.'
-        : ''
-    );
-  }, [totalHits]);
+  const shouldLoadMoreShown = !isLoading && images.length < totalHits;
 
   const handleSubmit = query => {
     setSearchQuery(query);
     setCurrentPage(1);
+    setError('');
     setImages([]);
     setTotalHits(null);
   };
@@ -64,9 +57,7 @@ export const App = () => {
       {images.length > 0 && <ImageGallery images={images} />}
       <Loader isLoading={isLoading} />
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {!isLoading && shouldLoadMoreShown && (
-        <Button onClick={handleClickOnLoadBtn} />
-      )}
+      {shouldLoadMoreShown && <Button onClick={handleClickOnLoadBtn} />}
     </Layout>
   );
 };

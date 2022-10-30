@@ -19,7 +19,6 @@ export const Searchbar = ({ onSubmit }) => {
   const handleInputSubmit = event => {
     event.preventDefault();
     onSubmit(query.trim());
-    setQuery('');
   };
 
   return (
@@ -45,6 +44,4 @@ export const Searchbar = ({ onSubmit }) => {
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  // inputValue: PropTypes.string.isRequired,
-  // onChange: PropTypes.func.isRequired,
 };
